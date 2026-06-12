@@ -28,6 +28,7 @@ default: all
 # This must be included after the default target (it defines targets
 # so we cannot have it be first in the Makefile).
 IMAGE_NAME ?= agentic-networking-controller
+SUPPORTED_FEATURES ?= SupportAccessPolicySPIFFESource,SupportAccessPolicyExternalAuth
 include $(CURDIR)/hack/build/Makefile.common.in
 
 .PHONY: help ## Print this help menu.
@@ -93,7 +94,10 @@ conformance: ## Run agentic-networking conformance tests.
 		echo "Please set it, e.g., GATEWAY_CLASS=kube-agentic-networking make conformance" >&2; \
 		exit 1; \
 	fi
-	go test -v ./conformance -run TestConformance -args --gateway-class="$(GATEWAY_CLASS)" --cleanup-base-resources=false
+	go test -v ./conformance -run TestConformance -args \
+		--gateway-class="$(GATEWAY_CLASS)" \
+		--cleanup-base-resources=false \
+		--supported-features="$(SUPPORTED_FEATURES)"
 
 .PHONY: test-gateway-api-conformance
 test-gateway-api-conformance: ## Run full Gateway API conformance tests including cluster setup and controller deployment.
